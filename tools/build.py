@@ -266,6 +266,7 @@ def build_elf(HC,stat):
         if not k.startswith('E:') or k in KEEP or onlyjunk(v): continue
         off=int(k[2:],16); cap=int(SRC[k][0]) if k in SRC else None
         if cap is None: stat['emiss']+=1; continue
+        if e[off-1]!=0 and off%4: stat['enotstr']+=1; continue   # 앞이 0 이 아니면 데이터 중간 (예: 실수 1.0 뒤)
         put(e,off,enc(v,HC),cap)
     for p in elftext.final(bytes(elf()))[1]:
         ko=GL.get(dec(p[2])) or kword(dec(p[4]))

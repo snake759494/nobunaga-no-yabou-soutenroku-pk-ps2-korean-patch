@@ -9,6 +9,8 @@
 import struct
 def member_cat(x):
     return (0x6f<=x<=0x77) or (1<=x<=99 and x%10) or (0x79<=x<=0xb3 and (x-0x79)%10!=9)
+# 이 분류 뒤의 2바이트 문자 첫 바이트는 멤버가 아니라 글 (敵の城 → 幅の城 오류)
+TEXT_AFTER={0x34,0x98,0x38,0x76,0x72,0x70,0x29,0x36,0x89,0x9c}
 def is_lead(c): return 0x81<=c<=0x9f or 0xe0<=c<=0xfc
 def code_end(s,i):
     """s[i] 에서 시작하는 코드 구간의 끝"""
@@ -19,7 +21,7 @@ def code_end(s,i):
             i+=1
             if i<n:
                 x=s[i]; i+=1
-                if member_cat(x) and i<n and s[i]>=0x32 and not (s[i]==0x81 and False): i+=1
+                if member_cat(x) and i<n and s[i]>=0x32 and not (x in TEXT_AFTER and is_lead(s[i])): i+=1
             continue
         if c==0x01:
             if i+1<n and s[i+1] in b'CJ': i+=4

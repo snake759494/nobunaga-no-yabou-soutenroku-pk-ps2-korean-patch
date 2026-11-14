@@ -202,6 +202,18 @@ def build_scen(i,HC,stat):
             j=scen.sj_run(bytes(s),q); m=scen.sj_run(bytes(s),q+9) if j and j<=q+8 else None
             if m and scen.is_hira(bytes(s[q+9:m])): add.append((q,8,bytes(s[q:j]),q+9,bytes(s[q+9:m]))); have.add(q)
     stat['surname']+=len(add)
+    # 앞 바이트가 0/fe/ff 가 아니라 pairs 가 놓친 관직 등 용어 레코드 (예: 35 03 修理大進)
+    i=0x5a0; n=len(s); lead=lambda c: 0x81<=c<=0x9f or 0xe0<=c<=0xfc
+    while i<n-4:
+        if lead(s[i]) and i not in have and not (lead(s[i-2]) and 0x40<=s[i-1]<=0xfc) and not lead(s[i-1]):
+            j=scen.sj_run(bytes(s),i)
+            if j and j>i+1 and 'T:'+dec(bytes(s[i:j])) in KO:
+                k=j
+                while k<n and s[k]==0: k+=1
+                m=scen.sj_run(bytes(s),k) if k>j else None
+                if m and scen.is_hira(bytes(s[k:m])):
+                    add.append((i,k-i-1,bytes(s[i:j]),k,bytes(s[k:m]))); have.add(i); stat['scterm2']+=1; i=m; continue
+        i+=1
     for p in P+add:
         kj,rd=dec(p[2]),dec(p[4])
         if p[1] in (4,8): ko=GL.get(kj) or kword(rd)

@@ -4,8 +4,8 @@ PS2 일본판 **信長の野望・蒼天録 with パワーアップキット (�
 
 ## 적용 방법
 1. 아래 해시와 일치하는 **원본 `.iso`** (Redump 형식)를 준비합니다. CSO·CHD 등으로 변환한 이미지에는 적용할 수 없습니다.
-2. xdeltaUI 같은 도구로 원본 ISO에 `NobunagaSoutenrokuPK_KO_v1.4.xdelta`를 적용합니다.
-   - 명령줄: `xdelta3 -d -s "Nobunaga no Yabou - Soutenroku with Power-Up Kit (Japan).iso" NobunagaSoutenrokuPK_KO_v1.4.xdelta "Nobunaga no Yabou - Soutenroku with Power-Up Kit (Korean).iso"`
+2. xdeltaUI 같은 도구로 원본 ISO에 `NobunagaSoutenrokuPK_KO_v1.5.xdelta`를 적용합니다.
+   - 명령줄: `xdelta3 -d -s "Nobunaga no Yabou - Soutenroku with Power-Up Kit (Japan).iso" NobunagaSoutenrokuPK_KO_v1.5.xdelta "Nobunaga no Yabou - Soutenroku with Power-Up Kit (Korean).iso"`
 3. 만들어진 ISO를 PCSX2 등에서 실행합니다.
 
 | 항목 | 값 |
@@ -13,9 +13,9 @@ PS2 일본판 **信長の野望・蒼天録 with パワーアップキット (�
 | 원본 ISO 크기 | 1,231,945,728 바이트 |
 | 원본 ISO MD5 | `9bd9661bb2ca97813dff0bfbaa9a012d` |
 | 원본 ISO SHA-256 | `6a969867d5615b01148a6cbdce63d4513e7977d25cb2ca0a6141e8665f674f0b` |
-| xdelta SHA-256 | `d6e9899c64078f73a6ce7c83bdbed579d12cebe4d11684a1f0a0437f85f1cad5` |
+| xdelta SHA-256 | `d45094f874baf906582656c59ca72e6e1af2de84b345bc983c47cdc9252633d0` |
 | 결과 ISO 크기 | 1,484,273,664 바이트 |
-| 결과 ISO SHA-256 | `a55ab9e9c270695ae004177559b34b8bf61e906a90ba76e81c61c9c36e8412e7` |
+| 결과 ISO SHA-256 | `0ca66ea2e697b665607b94e4639f1489b972394b0471b7d32ce68e99fe7fa0c1` |
 | 한글판 게임 CRC (PCSX2) | `7305465F` |
 
 ## 주의

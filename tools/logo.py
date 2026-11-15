@@ -30,7 +30,7 @@ def apply(b):
     H,W=rgb.shape[:2]
     # 원본 로고 유지, 아래에 한글 제목을 자막처럼 작게
     g=render('노부나가의 야망 창천록 with 파워업 키트',GOTH,18)
-    h=18; w=int(g.width*h/g.height); x0=290-w//2
+    h=18; w=int(g.width*h/g.height); x0=320-w//2
     a=place((H,W),g,(x0,333,x0+w,333+h))
     out=comp(rgb.astype(np.float32),a,(245,245,250),(215,215,225),(5,5,10),2)
     out=out.clip(0,255).astype(np.uint8)

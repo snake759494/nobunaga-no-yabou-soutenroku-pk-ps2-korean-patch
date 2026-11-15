@@ -24,6 +24,7 @@ for f in sorted(glob.glob(os.path.join(T,'ko','*.tsv'))):
 SRC={}
 for f in ('src_e39.tsv','src_e40.tsv','src_elf.tsv','src_ovl.tsv','src_scen_terms.tsv','src_scen_desc.tsv'):
     for x in tsv(os.path.join(T,f),3): SRC[x[0]]=(x[1],x[2].replace(BS+'n',NL))
+SHORT={jp:KO[k] for k,(cap,jp) in SRC.items() if k[:3] in ('40:','39:') and k in KO and NL not in jp and 1<len(jp)<=12}
 KEEP=set(open(os.path.join(T,'elf_keep_orig.txt')).read().split())|{'40:5943'}
 FIX={}   # 사전 개별 수정 (읽기 → 한글)
 FIXF=os.path.join(T,'name_override.tsv')
@@ -202,17 +203,28 @@ def build_scen(i,HC,stat):
             j=scen.sj_run(bytes(s),q); m=scen.sj_run(bytes(s),q+9) if j and j<=q+8 else None
             if m and scen.is_hira(bytes(s[q+9:m])): add.append((q,8,bytes(s[q:j]),q+9,bytes(s[q+9:m]))); have.add(q)
     stat['surname']+=len(add)
-    # 앞 바이트가 0/fe/ff 가 아니라 pairs 가 놓친 관직 등 용어 레코드 (예: 35 03 修理大進)
+    # 전수 보강: pairs 가 앞 바이트(03·04·06 등) 때문에 놓친 이름 칸 (관위·국명·마을·가보 등)
     i=0x5a0; n=len(s); lead=lambda c: 0x81<=c<=0x9f or 0xe0<=c<=0xfc
     while i<n-4:
         if lead(s[i]) and i not in have and not (lead(s[i-2]) and 0x40<=s[i-1]<=0xfc) and not lead(s[i-1]):
             j=scen.sj_run(bytes(s),i)
-            if j and j>i+1 and 'T:'+dec(bytes(s[i:j])) in KO:
-                k=j
+            if j and j>i+2:
+                t=dec(bytes(s[i:j])); k=j
                 while k<n and s[k]==0: k+=1
+                if k-j<=1 and j<=i+8 and s[j]==0 and lead(s[i+9]):   # 9바이트 칸 뒤 찌꺼기 → 읽기는 +9
+                    k=i+9
                 m=scen.sj_run(bytes(s),k) if k>j else None
-                if m and scen.is_hira(bytes(s[k:m])):
-                    add.append((i,k-i-1,bytes(s[i:j]),k,bytes(s[k:m]))); have.add(i); stat['scterm2']+=1; i=m; continue
+                rdg=bytes(s[k:m]) if m and scen.is_hira(bytes(s[k:m])) else None
+                ko=KO.get('T:'+t) or GL.get(t) or SHORT.get(t) or name41(t)
+                if not ko and rdg and any(ord(c)>=0x4e00 for c in t): ko=kword(dec(rdg))
+                if ko and k>j:
+                    put(s,i,enc(ko,HC),k-i-1); have.add(i); stat['scterm2']+=1
+                    if rdg and 'T:'+t not in KO:
+                        rk=m
+                        while rk<n and s[rk]==0: rk+=1
+                        rc=min(rk-k-1,12)
+                        if rc>=len(rdg): put(s,k,enc(ko.replace(' ',''),HC),rc)
+                    i=m if rdg else j; continue
         i+=1
     for p in P+add:
         kj,rd=dec(p[2]),dec(p[4])
@@ -225,7 +237,7 @@ def build_scen(i,HC,stat):
             while rk<len(s) and s[rk]==0: rk+=1
             rc=min(rk-p[3]-1,12)
             if rc>=len(p[4]): put(s,p[3],enc(ko.replace(' ',''),HC),rc)
-    for o in (0x2c,0x18f,0x1a4):
+    for o in (0x2c,0x41,0x18f,0x1a4):
         j=s.index(b'\0',o); t=dec(bytes(s[o:j])); k='D:'+t[:12]
         if k in KO: put(s,o,enc(KO[k],HC),j-o)
     return bytes(s)

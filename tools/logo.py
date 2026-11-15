@@ -28,27 +28,11 @@ def apply(b):
     ra,Ia=tim2.decode(bytes(b),A); rb,Ib=tim2.decode(bytes(b),B)
     rgb=np.concatenate([ra[...,:3],rb[...,:3]],1).copy(); al=np.concatenate([ra[...,3],rb[...,3]],1)
     H,W=rgb.shape[:2]
-    f=rgb.astype(np.float32); L=f@np.array([0.3,0.59,0.11],np.float32)
-    bg=cv2.medianBlur(rgb,31).astype(np.float32)@np.array([0.3,0.59,0.11],np.float32)
-    m=((np.abs(L-bg)>18)|(f[...,2]-f[...,1]>25)).astype(np.uint8)
-    reg=np.zeros_like(m); reg[28:345,80:640]=1; m&=reg
-    m=cv2.dilate(m,np.ones((7,7),np.uint8))
-    clean=cv2.inpaint(rgb,m,9,cv2.INPAINT_TELEA).astype(np.float32)
-    mm=cv2.GaussianBlur(m.astype(np.float32),(0,0),6)[...,None]; clean=clean*(1-0.45*mm)
-    # 1) 노부나가의 야망
-    a=place((H,W),render('노부나가의 야망',SERIF,60),(92,40,632,140))
-    out=comp(clean,a,(250,250,255),(150,155,175),(5,5,10),3,glow=(60,80,210),gw=9)
-    # 2) 창천록
-    a=place((H,W),render('창 천 록',SERIF,48),(220,150,450,210))
-    out=comp(out,a,(240,240,245),(160,160,170),(5,5,10),2,glow=(60,80,210),gw=7)
-    # 3) with
-    a=place((H,W),render('with',SERIF,20),(300,222,360,244))
-    out=comp(out,a,(230,230,230),(190,190,190),(5,5,10),1)
-    # 4) 파워업 키트 (검은 글자 흰 테두리)
-    a=place((H,W),render('파워업 키트',GOTH,44),(150,250,500,302))
-    out=comp(out,a,(15,15,20),(10,10,15),(235,235,240),2)
-    # 밑줄
-    cv2.line(out,(148,322),(500,322),(235,235,240),3); cv2.line(out,(148,322),(500,322),(15,15,20),1)
+    # 원본 로고 유지, 아래에 한글 제목을 자막처럼 작게
+    g=render('노부나가의 야망 창천록 with 파워업 키트',GOTH,18)
+    h=18; w=int(g.width*h/g.height); x0=290-w//2
+    a=place((H,W),g,(x0,333,x0+w,333+h))
+    out=comp(rgb.astype(np.float32),a,(245,245,250),(215,215,225),(5,5,10),2)
     out=out.clip(0,255).astype(np.uint8)
     imgpatch.encode(b,A,Ia,np.ascontiguousarray(out[:,:512]),np.ascontiguousarray(al[:,:512]))
     imgpatch.encode(b,B,Ib,np.ascontiguousarray(out[:,512:]),np.ascontiguousarray(al[:,512:]))

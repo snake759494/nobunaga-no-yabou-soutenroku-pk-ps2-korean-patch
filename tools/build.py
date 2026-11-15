@@ -24,6 +24,9 @@ for f in sorted(glob.glob(os.path.join(T,'ko','*.tsv'))):
 SRC={}
 for f in ('src_e39.tsv','src_e40.tsv','src_elf.tsv','src_ovl.tsv','src_scen_terms.tsv','src_scen_desc.tsv'):
     for x in tsv(os.path.join(T,f),3): SRC[x[0]]=(x[1],x[2].replace(BS+'n',NL))
+# 원문이 FF FF.. (정수 -1 등 데이터)인 키는 문자열이 아님 → 번역 금지 (공성전 배치 표 파손 방지)
+for _k,(_c,_jp) in list(SRC.items()):
+    if chr(0xf8f3) in _jp: KO.pop(_k,None); SRC.pop(_k,None)
 SHORT={jp:KO[k] for k,(cap,jp) in SRC.items() if k[:3] in ('40:','39:') and k in KO and NL not in jp and 1<len(jp)<=12}
 KEEP=set(open(os.path.join(T,'elf_keep_orig.txt')).read().split())|{'40:5943'}
 FIX={}   # 사전 개별 수정 (읽기 → 한글)

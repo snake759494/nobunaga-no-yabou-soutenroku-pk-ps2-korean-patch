@@ -1,11 +1,11 @@
 {
- "version": "v1.6",
- "asset": "NobunagaSoutenrokuPK_KO_v1.6.xdelta",
- "asset_size": 116611518,
- "asset_sha256": "b026821584b380a4ef4b1481abd1908dffcb20e8b288dac36c12f513675c6ebc",
+ "version": "v1.7",
+ "asset": "NobunagaSoutenrokuPK_KO_v1.7.xdelta",
+ "asset_size": 116611342,
+ "asset_sha256": "ab3ef96d901efe9fe1a78e08452587c2bf91f4d05a8c777484f55d252ac0c867",
  "source_iso_size": 1231945728,
  "source_iso_md5": "9bd9661bb2ca97813dff0bfbaa9a012d",
  "source_iso_sha256": "6a969867d5615b01148a6cbdce63d4513e7977d25cb2ca0a6141e8665f674f0b",
  "result_iso_size": 1484273664,
- "result_iso_sha256": "62692cef94872bc01b818a16c8427d0676b9fdb06c6b8a06a10e04ad00bf7f49"
+ "result_iso_sha256": "6d7dbeab5496da0bf7a6ee0797c77260f75be4058c13deae6795736beab9a0b4"
 }
